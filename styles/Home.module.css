@@ -128,3 +128,17 @@
     filter: invert(1);
   }
 }
+
+.packageTable {
+  margin: auto;
+  text-align: center;
+  width: 75%;
+  background-color: inherit;
+}
+.packageTableHead {
+  background-color: black;
+}
+.packageTableRow:nth-child(odd){
+  background-color: inherit;
+}
+

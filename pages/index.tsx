@@ -2,6 +2,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+
+const packages =[
+  {packageName: "@reactTypes", installed: true, deployed: true,order:4},
+  {packageName: "@types/node", installed: true, deployed: true, order:3},
+  {packageName: "react-firebase-hooks", installed: true, deployed: true, order:2 },
+  {packageName: "firebase", installed: true, deployed: true,order: 1}
+]
+
 export default function Home() {
   return (
     <div className={styles.container}>
@@ -52,6 +60,24 @@ export default function Home() {
           </a>
         </div>
       </main>
+
+        <table className={styles.packageTable}>
+          <thead className={styles.packageTableHead}>
+          <tr>
+            <th>Order</th><th>Module</th><th>Installed</th><th>Deployed</th>
+          </tr>
+          </thead>
+          <tbody>
+          {packages.map((pkg:any)=>(
+              <tr key={pkg.order}>
+                  <td>{pkg.order}</td><td>{pkg.packageName}</td><td>{pkg.installed ? 'Y' : '×'}</td><td>{pkg.deployed ? 'Y' : '×'}</td>
+              </tr>
+
+          ))}
+          </tbody>
+        </table>
+
+
 
       <footer className={styles.footer}>
         <a
