@@ -1,7 +1,13 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-
+import {NextPage} from "next";
+import React from "react";
+import {auth,db} from "../firebase/clientApp";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {useCollection} from "react-firebase-hooks/firestore";
+import {useRouter} from "next/router";
+import {collection, doc, getDocs, query, where,getFirestore} from "firebase/firestore";
 
 const packages =[
   {packageName: "@reactTypes", installed: true, deployed: true,order:4},
@@ -42,11 +48,11 @@ export default function Home() {
           </a>
 
           <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
+            href="https://console.firebase.google.com/"
             className={styles.card}
           >
             <h2>FireStore Data Base &rarr;</h2>
-            <p>Realtime data updates: Not yet active</p>
+            <p>Active on this install</p>
           </a>
 
           <a
