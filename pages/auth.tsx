@@ -105,14 +105,14 @@ const Auth:NextPage = () => {
     }
     return (
         <div>
-            <h1>Pineapple Login</h1>
+            <h1>Next Js Login Login</h1>
             <p>Please sign-in:</p>
             <button className={styles.google} onClick={() => {
                 popUpSignUp(googleAuthProvider)
             }}>Sign in and Register With Google
             </button>
             <button className={styles.gitHub} onClick={() => {
-                popUpSignUp(gitHubAuthProvider)
+                redirectSignUp(gitHubAuthProvider)
             }}>Sign in and Register With GitHub
             </button>
             <div id="firebaseui-auth-container"></div>

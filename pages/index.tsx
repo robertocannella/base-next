@@ -2,12 +2,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
-import React from "react";
+import React, {useEffect} from "react";
 import {auth,db} from "../firebase/clientApp";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useCollection} from "react-firebase-hooks/firestore";
 import {useRouter} from "next/router";
 import {collection, doc, getDocs, query, where,getFirestore} from "firebase/firestore";
+import {connectStorageEmulator} from "@firebase/storage";
 
 const packages =[
   {packageName: "@reactTypes", installed: true, deployed: true,order:4},
@@ -16,14 +17,50 @@ const packages =[
   {packageName: "firebase", installed: true, deployed: true,order: 1}
 ]
 
+
+const signOut = async () => {
+  await auth.signOut();
+}
+const signIn = () => {
+
+}
+
 export default function Home() {
+
+  const [user, loading, error ] = useAuthState(auth);
+  const router = useRouter()
+  useEffect(() => {
+    // Send the user to the auth page if they are not logged in
+    if (!user) {
+      router.push("/auth");
+    }
+  });
+
   return (
+
     <div className={styles.container}>
       <Head>
         <title>Roberto Next App</title>
         <meta name="description" content="A Typescript React Next.js FireBase FireStore App" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+
+      {/*<div >Signed in as: {user.displayName}  {user.photoURL? <img src={user.photoURL} alt={`Photo of ${user.displayName}`}/> : ''}</div>*/}
+      {user ? (
+          <div>
+            <button onClick={signOut} className="hover:underline ">
+              Sign Out
+            </button>
+          </div>
+      ) : (
+          <div>
+            <button onClick={signIn} className="hover:underline ">
+              Sign In
+            </button>
+          </div>
+      ) }
+
 
       <main className={styles.main}>
         <h1 className={styles.title}>
