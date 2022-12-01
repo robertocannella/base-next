@@ -2,39 +2,51 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {auth,db} from "../firebase/clientApp";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {useCollection} from "react-firebase-hooks/firestore";
 import {useRouter} from "next/router";
-import {collection, doc, getDocs, query, where,getFirestore} from "firebase/firestore";
-import {connectStorageEmulator} from "@firebase/storage";
-
-const packages =[
-  {packageName: "@reactTypes", installed: true, deployed: true,order:4},
-  {packageName: "@types/node", installed: true, deployed: true, order:3},
-  {packageName: "react-firebase-hooks", installed: true, deployed: true, order:2 },
-  {packageName: "firebase", installed: true, deployed: true,order: 1}
-]
+import {collection, doc, getDocs, query, where, getFirestore, getDoc} from "firebase/firestore";
 
 
 const signOut = async () => {
   await auth.signOut();
 }
-const signIn = () => {
 
-}
 
-export default function Home() {
-
-  const [user, loading, error ] = useAuthState(auth);
+const Home : React.FC<any> = ({props}:any) => {
+  // Router
   const router = useRouter()
+  // User Info
+  const [user, loading, error ] = useAuthState(auth);
+  const [state , setState] = useState<{isRegistered: boolean}>({isRegistered: false});
+  const [modules, setModules] = useState<{}[]>([]);
+
+
+  const signIn = () => {
+    router.push('/auth')
+  }
   useEffect(() => {
     // Send the user to the auth page if they are not logged in
-    if (!user) {
-      router.push("/auth");
-    }
-  });
+    // if (!user) {
+    //   router.push("/auth");
+    // }
+
+    fetchModules();
+  },[]);
+
+  const fetchModules = async () => {
+    await getDocs(collection(db,"modules")).then((querySnapshot)=>{
+      const newData = querySnapshot.docs
+          .map((doc)=> {
+           return  {...doc.data(),id:doc.id}
+          });
+
+      setModules([...newData]);
+    })
+  }
+
+
 
   return (
 
@@ -44,44 +56,72 @@ export default function Home() {
         <meta name="description" content="A Typescript React Next.js FireBase FireStore App" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div>
 
-
-      {/*<div >Signed in as: {user.displayName}  {user.photoURL? <img src={user.photoURL} alt={`Photo of ${user.displayName}`}/> : ''}</div>*/}
+        <div className={styles.navBar}>
+          {user ? `Signed in as: ${user.displayName} | Thanks for signing in.`: 'A Typescript React Next.js FireBase FireStore App'}
+          {/*{user!.photoURL? <img src={user!.photoURL} alt={`Photo of ${user!.displayName}`}/> : ''}*/}
+        </div>
+          <ul className={styles.headerButtons}>
       {user ? (
-          <div>
-            <button onClick={signOut} className="hover:underline ">
-              Sign Out
-            </button>
-          </div>
+          <li  className={styles.btn}>
+           <a onClick={signOut} className={styles.headerHoverUnderlineAnimation}>Sign Out</a>
+          </li>
       ) : (
-          <div>
-            <button onClick={signIn} className="hover:underline ">
-              Sign In
-            </button>
-          </div>
+            <li  className={styles.btn}>
+              <a onClick={signIn} className={styles.headerHoverUnderlineAnimation}>Sign in</a>
+            </li>
       ) }
-
+        <li  className={styles.btn}>
+          <a onClick={()=>{router.push('https://www.robertocannella.com')}}
+             className={styles.headerHoverUnderlineAnimation}>My Home Page</a>
+        </li>
+        <li  className={styles.btn}>
+         <a onClick={()=>{router.push('https://github.com/robertocannella')}}
+            className={styles.headerHoverUnderlineAnimation}>My GitHub</a>
+        </li>
+          </ul>
+      </div>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome!
         </h1>
-
         <p className={styles.description}>
-          <code className={styles.code}>This is a Test Next.js Site</code>
+          <code className={styles.code}>This is a Test Next.js Site. {user ? '': 'Sign in to see more functionality!'}</code>
         </p>
 
-        <p>Here are the things I will install</p>
-
+        <h2>&lt; Here are the things I will install &gt;</h2>
         <div className={styles.grid}>
+
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h2>Next.js &rarr;</h2>
             <p>Active on this install</p>
+            <ul><li>Framework build on React</li></ul>
+          </a>
+
+          <a href="https://nextjs.org/learn/seo/introduction-to-seo" className={styles.card}>
+            <h2>ServerSide Rendering &rarr;</h2>
+            <p>Not active on this install</p>
+            <ul><li>Improves SEO</li></ul>
+          </a>
+
+          <a href="https://cloud.google.com/functions" className={styles.card}>
+            <h2>Google Cloud Functions &rarr;</h2>
+            <p>Not active on this install</p>
+            <ul><li>Run code in the cloud</li><li>Designed around event driven architectures</li></ul>
+          </a>
+
+          <a href="https://fontawesome.com/" className={styles.card}>
+            <h2>Font Awesome &rarr;</h2>
+            <p>Not active on this install</p>
+            <ul><li>Great looking SVG font library</li><li>Requires customization under Next.js</li></ul>
           </a>
 
           <a href="https://www.typescriptlang.org/" className={styles.card}>
             <h2>TypeScript &rarr;</h2>
             <p>Active on this install</p>
+            <ul><li>Strongly typed software always wins</li></ul>
           </a>
 
           <a
@@ -90,6 +130,8 @@ export default function Home() {
           >
             <h2>FireStore Data Base &rarr;</h2>
             <p>Active on this install</p>
+            <ul><li>Real time database updates</li></ul>
+
           </a>
 
           <a
@@ -98,8 +140,10 @@ export default function Home() {
           >
             <h2>Authentication. &rarr;</h2>
             <p>
-              Fire Base Auth: Not yet active.
+              Active on this install.
             </p>
+            <ul><li>GitHub</li><li>Google</li></ul>
+
           </a>
         </div>
       </main>
@@ -111,12 +155,13 @@ export default function Home() {
           </tr>
           </thead>
           <tbody>
-          {packages.map((pkg:any)=>(
-              <tr key={pkg.order}>
-                  <td>{pkg.order}</td><td>{pkg.packageName}</td><td>{pkg.installed ? 'Y' : '×'}</td><td>{pkg.deployed ? 'Y' : '×'}</td>
-              </tr>
+          {modules.map((module:any)=>(
+              <tr key={module.id}>
+          <td>{module.order}</td><td>{module.name}</td><td>{module.installed ? 'Y' : '×'}</td><td>{module.deployed ? 'Y' : '×'}</td>
 
+              </tr>
           ))}
+
           </tbody>
         </table>
 
@@ -128,12 +173,17 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Next.js created by{' '}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
+
+
         </a>
+        <span>Hosted at Google FireBase</span>
       </footer>
     </div>
   )
 }
+
+export default Home

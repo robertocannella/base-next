@@ -1,5 +1,52 @@
 .container {
+  margin-top: 40px;
   padding: 0 2rem;
+}
+.navBar {
+  z-index: 999;
+  margin: 0;
+  padding: 10px;
+  background-color: #37003b;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  box-shadow: 0 2px 4px 0 rgba(100, 100, 100, 0.7);
+}
+.headerHoverUnderlineAnimation{
+  display: inline-block;
+  position: relative;
+  color: inherit;
+}
+.headerHoverUnderlineAnimation::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #00d004;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+.headerHoverUnderlineAnimation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.headerButtons {
+  list-style: none;
+  margin: auto;
+  padding: 0;
+  display: inline-flex;
+
+}
+.headerButtons li {
+  padding: 2px 0 2px 0;
+}
+.headerButtons li a {
+  display: block;
 }
 
 .main {
@@ -10,6 +57,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.btn {
+  margin: 9px;
+  padding: .5rem;
+  cursor: pointer;
 }
 
 .footer {
@@ -83,7 +135,7 @@
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
   width: 400px;
-  height: 150px;
+  min-height: 150px;
 }
 
 .card:hover,
@@ -133,12 +185,29 @@
   margin: auto;
   text-align: center;
   width: 75%;
-  background-color: inherit;
+  /*background-color: inherit;*/
 }
 .packageTableHead {
-  background-color: black;
-}
-.packageTableRow:nth-child(odd){
   background-color: inherit;
 }
+.packageTableRow:nth-child(odd){
+  background-color: gray;
+}
+@media screen and (max-width: 850px) {
+  .container {
+    margin-top: 40px;
+    justify-content: center;
+    width: fit-content;
+  }
 
+  .main {
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .card {
+    margin: auto auto 10px;
+    background-color: hwb(0deg 9% 91%);
+    justify-content: center;
+  }
+}

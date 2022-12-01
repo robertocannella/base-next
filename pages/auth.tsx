@@ -9,6 +9,7 @@ import {useRouter} from "next/router";
 import {addDoc, collection, getDocs, query, where} from "firebase/firestore";
 import {UserCredential} from "firebase/auth";
 import styles from '../styles/Auth.module.css'
+import {connectivityState} from "@grpc/grpc-js";
 
 
 
@@ -68,21 +69,24 @@ const Auth:NextPage = () => {
         }
     }
     const redirectSignUp = async (authProvider: GoogleAuthProvider | GithubAuthProvider) => {
-        await signInWithRedirect(auth, authProvider)
+
+        signInWithRedirect(auth, authProvider).then((result)=>{
+            console.log(result)
+        })
+
         try {
             const result: UserCredential | null = await getRedirectResult(auth);
             if (!result) {
                 throw new Error(`"result is NULL`)
             }
-            ;
 
             const credential = GithubAuthProvider.credentialFromResult(result);
             if (credential) {
                 const token = credential.accessToken
             }
-            ;
 
             const user = result.user
+            console.log(user)
             const q = query(collection(db, "users"), where("uid", "==", user.uid));
             const docs = await getDocs(q);
             if (docs.docs.length === 0) {
@@ -97,26 +101,49 @@ const Auth:NextPage = () => {
             }
         } catch (err: any) {
             if (err.code === 'auth/account-exists-with-different-credential') {
-                //handleAuthAccountExists(auth, err,router,authProvider)
+                console.log(err)
+                handleAuthAccountExists(auth, err,router,authProvider)
             }
 
         }
 
     }
     return (
-        <div>
-            <h1>Next Js Login Login</h1>
-            <p>Please sign-in:</p>
-            <button className={styles.google} onClick={() => {
-                popUpSignUp(googleAuthProvider)
-            }}>Sign in and Register With Google
-            </button>
-            <button className={styles.gitHub} onClick={() => {
-                redirectSignUp(gitHubAuthProvider)
-            }}>Sign in and Register With GitHub
-            </button>
-            <div id="firebaseui-auth-container"></div>
-        </div>
+            <div className={styles.container}>
+            <div className={styles.auth__heading}>
+                Roberto Cannella says:
+            </div>
+            <div>
+                <div >
+                <h1 className={styles.auth__heading_h1}>{`"Thanks for Logging in."`}</h1>
+                <p>Please sign-in: </p>
+                    <ul className={styles.AuthButtonContainer}>
+                        <li  className={styles.btn}>
+                            <a className={styles.google} onClick={() => {
+                                popUpSignUp(googleAuthProvider)
+                            }}>Sign in With Google
+                            </a>
+                        </li>
+                        <li className={styles.btn}>
+                            <a className={styles.gitHub} onClick={() => {
+                                redirectSignUp(gitHubAuthProvider)
+                            }}>Sign in  With GitHub
+                            </a>
+                        </li>
+                        <li className={styles.btn}>
+                            <a className={styles.gitHub} onClick={() => {
+                                redirectSignUp(gitHubAuthProvider)
+                            }}>Sign in  With Email
+                            </a>
+                        </li>
+                    </ul>
+                    <p>{`Your name, email and photo (if you have one) will be saved in my database.  Don't worry, I'm just curious!`}</p>
+
+
+                <div id="firebaseui-auth-container"></div>
+                </div>
+            </div>
+            </div>
     );
     function promptUserForPassword(): string {
         alert("Enter Password")

@@ -1,13 +1,41 @@
+.container {
+    margin-top: 40px;
+    padding: 0 2rem;
+}
+.navBar {
+    margin: 0;
+    padding: 10px;
+    background-color: #656565;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    box-shadow: 0 2px 4px 0 rgba(100, 100, 100, 0.7);
+}
+.AuthButtonContainer {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: inline-block;
+}
+.AuthButtonContainer li {
+    padding: 2px 0 2px 0;
+}
+.AuthButtonContainer li a {
+    display: block;
+}
+
 .auth {
     display: flex;
     justify-content: center;
     background-color: lightblue;
+    color:inherit;
 }
 .auth__heading {
     margin: 0;
     padding-top: 5px;
     padding-bottom: 5px;
-    color: #222222;
+    color: inherit;
 }
 .liVotes {
 
@@ -17,15 +45,37 @@
     cursor: pointer;
     padding: 10px;
     margin: 2px 5px 2px 5px;
-    background-color: #4c8bf5;
-    border: 0;
-    border-radius: 2px;
+    border: 2px #4c8bf5 solid;
+    border-radius: 4px;
+    background-color: #eeeeee;
+    font-size: 1rem;
+    color: #4c8bf5;
 }
+
 .gitHub {
     cursor: pointer;
     padding: 10px;
     margin: 2px 5px 2px 5px;
-    border: 0;
-    border-radius: 2px;
+    border: 2px #cccccc solid;
+    border-radius: 4px;
+    background-color: #eeeeee;
+    font-size: 1rem;
+    color: black;
 }
+.gitHub:hover,
+.google:hover{
+    background-color: white;
+}
+
+@media screen and (max-width: 850px) {
+    .container {
+        margin-top: 40px;
+        justify-content: center;
+        width: fit-content;
+    }
+    .auth__heading_h1{
+        font-size: 1.5rem;
+    }
+}
+
 
